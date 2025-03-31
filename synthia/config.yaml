@@ -23,4 +23,3 @@ options:
 schema:
   log_level: str
 
-image: "local/synthia"
