@@ -42,9 +42,9 @@ state = {
 def log(msg, level="info"):
     timestamp = datetime.now().isoformat()
     entry = f"[{timestamp}] [{level.upper()}] {msg}"
+    print(entry)  # <-- Required for add-on log tab
     with open(LOG_PATH, "a") as f:
         f.write(entry + "\n")
-    print(entry)
 
 def load_config():
     try:
