@@ -1,20 +1,25 @@
-# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
-name: Example add-on
-version: "1.2.0"
-slug: example
-description: Example add-on
-url: "https://github.com/home-assistant/addons-example/tree/main/example"
+name: Synthia
+version: "0.1.0"
+slug: synthia
+description: A personal AI assistant running as a Home Assistant add-on.
+url: "https://github.com/danhajduk/synthia-addon/tree/main/synthia"
+
 arch:
   - armhf
   - armv7
   - aarch64
   - amd64
   - i386
+
 init: false
-map:
-  - share:rw
+startup: services
+boot: auto
+homeassistant_api: true
+host_network: true
+
 options:
-  message: "Hello world..."
+  log_level: info
 schema:
-  message: "str?"
-image: "ghcr.io/home-assistant/{arch}-addon-example"
+  log_level: "str"
+
+image: "ghcr.io/danhajduk/{arch}-addon-synthia"
