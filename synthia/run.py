@@ -4,27 +4,12 @@ import os
 import threading
 from datetime import datetime
 from flask import Flask, render_template
+
 from utils import log
 from openai_utils import run_openai_test
 
 LOG_PATH = "data/log.txt"
 CONFIG_PATH = "/data/options.json"
-
-@app.route("/")
-def index():
-    logs = ""
-    try:
-        with open(LOG_PATH) as f:
-            logs = "\n".join(f.readlines()[-20:])
-    except:
-        logs = "Log file not found."
-    return render_template(
-        "status.html",
-        log_level=state["log_level"],
-        enable_notifications=state["enable_notifications"],
-        last_run=state["last_run"],
-        logs=logs
-    )
 
 app = Flask(__name__)
 state = {
@@ -65,8 +50,11 @@ def index():
             logs = "\n".join(f.readlines()[-20:])
     except:
         logs = "Log file not found."
-    return render_template_string(
-        "<h1>Synthia Status</h1><pre>{{ logs }}</pre>",
+    return render_template(
+        "status.html",
+        log_level=state["log_level"],
+        enable_notifications=state["enable_notifications"],
+        last_run=state["last_run"],
         logs=logs
     )
 
