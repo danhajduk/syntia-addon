@@ -4,6 +4,7 @@ import os
 import threading
 from datetime import datetime
 from flask import Flask, render_template_string
+from openai_utils import run_openai_test
 
 LOG_PATH = "data/log.txt"
 CONFIG_PATH = "/data/options.json"
@@ -84,6 +85,7 @@ def main():
 
     load_config()
 
+    run_openai_test(config.get("openai_api_key", ""))
     thread = threading.Thread(target=background_loop, daemon=True)
     thread.start()
 

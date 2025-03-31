@@ -24,7 +24,10 @@ panel_title: Synthia
 
 options:
   log_level: info
+  enable_notifications: false
+  openai_api_key: ""
 
 schema:
   log_level: str
-
+  enable_notifications: bool
+  openai_api_key: str
