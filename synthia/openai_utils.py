@@ -1,5 +1,5 @@
+from utils import log
 import openai
-from run import log  # Importing your shared logging function
 
 def run_openai_test(api_key):
     if not api_key:
