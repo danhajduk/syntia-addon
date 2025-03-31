@@ -1,0 +1,17 @@
+log_level:
+  name: Log Level
+  description: Set the logging level for Synthia
+  selector:
+    select:
+      options:
+        - info
+        - debug
+        - warning
+        - error
+        - critical
+
+enable_notifications:
+  name: Enable Notifications
+  description: Whether Synthia should send notifications
+  selector:
+    boolean: {}
