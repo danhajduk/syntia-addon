@@ -17,6 +17,11 @@ boot: auto
 homeassistant_api: true
 host_network: true
 
+ingress: true
+ingress_port: 8099
+panel_icon: mdi:robot
+panel_title: Synthia
+
 options:
   log_level: info
 
