@@ -1,5 +1,5 @@
-from utils import log
 import openai
+from utils import log
 
 def run_openai_test(api_key):
     if not api_key:
