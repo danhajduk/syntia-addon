@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Synthia Status</title>
+  <style>
+    body { background: #111; color: #eee; font-family: sans-serif; padding: 2em; }
+    h1 { color: #00e676; }
+    .info { margin-bottom: 1em; }
+    .logbox { background: #222; padding: 1em; border-radius: 4px; max-height: 300px; overflow-y: scroll; }
+  </style>
+</head>
+<body>
+  <h1>🧠 Synthia Status</h1>
+  <div class="info"><strong>Log Level:</strong> {{ log_level }}</div>
+  <div class="info"><strong>Notifications Enabled:</strong> {{ enable_notifications }}</div>
+  <div class="info"><strong>Last Run:</strong> {{ last_run }}</div>
+  <h2>Recent Logs</h2>
+  <div class="logbox"><pre>{{ logs }}</pre></div>
+</body>
+</html>
