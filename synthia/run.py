@@ -7,6 +7,8 @@ from flask import Flask, render_template, request
 
 from utils import log
 from openai_utils import run_openai_test
+from assistant import SynthiaAssistant
+
 
 LOG_PATH = "data/log.txt"
 CONFIG_PATH = "/data/options.json"
