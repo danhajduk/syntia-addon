@@ -19,7 +19,7 @@ async def index(request: Request):
         "active_page": "main"
     })
 
-@app.get("/status", response_class=HTMLResponse)
+@app.get("/status", response_class=HTMLResponse, name="status_page")
 async def status_page(request: Request):
     logs = ""
     try:
@@ -78,7 +78,7 @@ async def status_page(request: Request):
         "active_page": "status"
     })
 
-@app.get("/testing", response_class=HTMLResponse)
+@app.get("/testing", response_class=HTMLResponse, name="testing_page")
 async def testing_page(request: Request):
     return templates.TemplateResponse("testing.html", {"request": request, "response": None, "prompt": "", "active_page": "testing"})
 
