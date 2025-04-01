@@ -12,9 +12,12 @@ from utils import log
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse, name="main_page")
 async def index(request: Request):
-    return templates.TemplateResponse("main.html", {"request": request, "active_page": "main"})
+    return templates.TemplateResponse("main.html", {
+        "request": request,
+        "active_page": "main"
+    })
 
 @app.get("/status", response_class=HTMLResponse)
 async def status_page(request: Request):
