@@ -64,13 +64,17 @@ def status_page():
         "end_date": None
     }
 
-    # Load saved settings (admin API key for usage)
+    # Load saved settings to get admin API key
     try:
-        with open(SETTINGS_PATH, "r") as f:
-            saved = json.load(f)
-            admin_key = saved.get("admin_api_key")
-            if admin_key:
-                usage = get_usage(admin_key)
+        if os.path.exists(SETTINGS_PATH):
+            with open(SETTINGS_PATH, "r") as f:
+                saved = json.load(f)
+        else:
+            saved = {}
+
+        admin_key = saved.get("admin_api_key")
+        if admin_key:
+            usage = get_usage(admin_key)
     except Exception as e:
         log(f"Failed to load settings or usage: {e}", "error")
 
