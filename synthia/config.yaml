@@ -1,5 +1,5 @@
 name: Synthia
-version: "0.1.2c"
+version: "0.1.2d"
 slug: synthia
 description: A personal AI assistant running as a Home Assistant add-on.
 url: "https://github.com/danhajduk/syntia-addon/tree/main/syntia"
