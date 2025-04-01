@@ -3,7 +3,7 @@ import time
 import os
 import threading
 from datetime import datetime
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from utils import log
 from openai_utils import run_openai_test
