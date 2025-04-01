@@ -66,17 +66,9 @@ def status_page():
     }
 
     # Load saved settings to get admin API key
-    saved = {}
-    try:
-        if os.path.exists(SETTINGS_PATH):
-            with open(SETTINGS_PATH, "r") as f:
-                saved = json.load(f)
-        else:
-            log(f"[STATUS] No settings file found at {SETTINGS_PATH}", "debug")
-    except Exception as e:
-        log(f"[STATUS] Failed to load settings: {e}", "error")
+    config = load_config()
+    admin_key = config.get("admin_api_key")
 
-    admin_key = saved.get("admin_api_key")
     if admin_key:
         try:
             usage = get_usage(admin_key)
