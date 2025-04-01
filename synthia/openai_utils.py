@@ -1,20 +1,14 @@
-from openai import OpenAI
+from assistant import SynthiaAssistant
 from utils import log
 
-def run_openai_test(api_key):
-    if not api_key:
-        log("OpenAI API key not set — skipping OpenAI test.", "warning")
+def run_openai_test(api_key, assistant_id):
+    if not api_key or not assistant_id:
+        log("Missing OpenAI credentials – skipping assistant test.", "warning")
         return
 
     try:
-        client = OpenAI(api_key=api_key)
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "user", "content": "Tell me a joke about ducks"}
-            ]
-        )
-        answer = response.choices[0].message.content
-        log(f"🧠 OpenAI replied: {answer}")
+        assistant = SynthiaAssistant(api_key, assistant_id)
+        result = assistant.run("Tell me something cool about ducks.")
+        log(f"🧠 Assistant response: {result}")
     except Exception as e:
-        log(f"❌ OpenAI request failed: {e}", "error")
+        log(f"❌ Assistant failed: {e}", "error")

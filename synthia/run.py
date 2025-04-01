@@ -61,7 +61,11 @@ def index():
 def main():
     ensure_log_file()
     config = load_config()
-    run_openai_test(config.get("openai_api_key", ""))
+
+    run_openai_test(
+        config.get("openai_api_key", ""),
+        config.get("assistant_id", "")
+    )
 
     thread = threading.Thread(target=background_loop, daemon=True)
     thread.start()

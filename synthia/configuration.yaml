@@ -22,3 +22,10 @@ openai_api_key:
   selector:
     text:
       type: password
+
+assistant_id:
+  name: OpenAI Assistant ID
+  description: Your dedicated Assistant ID from OpenAI
+  selector:
+    text:
+      type: text
