@@ -43,7 +43,11 @@ def background_loop():
         time.sleep(60)
 
 @app.route("/")
-def index():
+def main_page():
+    return render_template("main.html", active_page="main")
+
+@app.route("/status")
+def status_page():
     logs = ""
     try:
         with open(LOG_PATH) as f:
@@ -55,8 +59,13 @@ def index():
         log_level=state["log_level"],
         enable_notifications=state["enable_notifications"],
         last_run=state["last_run"],
-        logs=logs
+        logs=logs,
+        active_page="status"
     )
+
+@app.route("/testing")
+def testing_page():
+    return render_template("testing.html", active_page="testing")
 
 def main():
     ensure_log_file()

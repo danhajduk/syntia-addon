@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Synthia</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #111;
+      color: #eee;
+      display: flex;
+    }
+    nav {
+      width: 220px;
+      background: #1f1f1f;
+      height: 100vh;
+      padding: 1em;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    }
+    nav h2 {
+      color: #00e676;
+      margin-bottom: 2em;
+    }
+    nav a {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      margin: 1em 0;
+      padding: 0.5em;
+      border-radius: 4px;
+    }
+    nav a:hover, nav a.active {
+      background: #00e676;
+      color: #111;
+    }
+    main {
+      flex-grow: 1;
+      padding: 2em;
+    }
+    h1 {
+      color: #00e676;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h2>Synthia</h2>
+    <a href="/" class="{{ 'active' if active_page == 'main' else '' }}">Main</a>
+    <a href="/status" class="{{ 'active' if active_page == 'status' else '' }}">Status</a>
+    <a href="/testing" class="{{ 'active' if active_page == 'testing' else '' }}">Testing</a>
+  </nav>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
