@@ -29,8 +29,10 @@
       margin: 1em 0;
       padding: 0.5em;
       border-radius: 4px;
+      transition: background 0.2s ease;
     }
-    nav a:hover, nav a.active {
+    nav a:hover,
+    nav a.active {
       background: #00e676;
       color: #111;
     }
@@ -41,6 +43,9 @@
     h1 {
       color: #00e676;
     }
+    label {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -49,6 +54,7 @@
     <a href="/" class="{{ 'active' if active_page == 'main' else '' }}">Main</a>
     <a href="/status" class="{{ 'active' if active_page == 'status' else '' }}">Status</a>
     <a href="/testing" class="{{ 'active' if active_page == 'testing' else '' }}">Testing</a>
+    <a href="/settings" class="{{ 'active' if active_page == 'settings' else '' }}">Settings</a>
   </nav>
   <main>
     {% block content %}{% endblock %}
