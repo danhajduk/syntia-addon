@@ -1,5 +1,5 @@
 name: Synthia
-version: "0.1.2c"
+version: "0.1.2d"
 slug: synthia
 description: A personal AI assistant running as a Home Assistant add-on.
 url: "https://github.com/danhajduk/syntia-addon/tree/main/syntia"
@@ -23,7 +23,7 @@ panel_icon: mdi:robot
 panel_title: Synthia
 
 options:
-  log_level: info
+  log_level: debug
   enable_notifications: false
   openai_api_key: ""
   assistant_id: ""

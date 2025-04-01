@@ -4,7 +4,7 @@ from utils import log
 
 USAGE_ENDPOINT = "https://api.openai.com/v1/usage"
 
-def get_usage(api_key, days=30):
+def get_usage(api_key, days=7):
     try:
         end_date = datetime.utcnow().date()
         start_date = end_date - timedelta(days=days)

@@ -9,7 +9,11 @@
   <pre>{{ logs }}</pre>
 </div>
 <h2>OpenAI Usage</h2>
+{% if usage.total_tokens != "Unavailable" and usage.total_tokens != 0 %}
 <ul>
   <li><strong>Usage ({{ usage.start_date }} to {{ usage.end_date }}):</strong> {{ usage.total_tokens }} tokens</li>
 </ul>
+{% else %}
+<p><em>No token usage found for this period or API key.</em></p>
+{% endif %}
 {% endblock %}
