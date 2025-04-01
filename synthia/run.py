@@ -14,6 +14,9 @@ CONFIG_PATH = "/data/options.json"
 SETTINGS_PATH = "data/user_settings.json"
 
 app = Flask(__name__)
+from werkzeug.middleware.proxy_fix import ProxyFix
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
+
 state = {
     "log_level": "info",
     "enable_notifications": False,
