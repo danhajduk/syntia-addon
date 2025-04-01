@@ -78,7 +78,7 @@ def status_page():
 
     if admin_key:
         try:
-            costs = get_costs(admin_key,365)
+            costs = get_costs(admin_key,30)
         except Exception as e:
             log(f"[STATUS] Error getting costs: {e}", "error")
     else:
