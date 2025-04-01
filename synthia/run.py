@@ -7,7 +7,7 @@ from flask import Flask, render_template, request
 
 from utils import log
 from assistant import SynthiaAssistant
-from usage import get_usage
+from usage import get_costs
 
 LOG_PATH = "data/log.txt"
 CONFIG_PATH = "/data/options.json"
