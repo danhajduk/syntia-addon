@@ -7,7 +7,7 @@ import os
 import json
 from assistant import SynthiaAssistant
 from usage import  get_costs
-from utils import log, LOG_PATH, SETTINGS_PATH, load_config, state
+from utils import log, LOG_PATH, load_config, state
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
