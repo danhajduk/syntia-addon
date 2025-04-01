@@ -1,5 +1,22 @@
 {% extends "layout.html" %}
 {% block content %}
 <h1>Assistant Testing</h1>
-<p>In the future, you'll be able to submit a prompt here and get a response from Synthia.</p>
+
+<form method="POST" action="/testing">
+  <label for="prompt">Ask Synthia something:</label><br>
+  <input type="text" id="prompt" name="prompt" style="width: 80%; padding: 0.5em; margin-top: 0.5em;" required>
+  <button type="submit" style="padding: 0.5em 1em; margin-left: 0.5em;">Ask</button>
+</form>
+
+{% if prompt %}
+  <h2 style="margin-top:2em;">Your Prompt:</h2>
+  <p>{{ prompt }}</p>
+{% endif %}
+
+{% if response %}
+  <h2>Synthia Responded:</h2>
+  <div style="background:#222;padding:1em;border-radius:6px;margin-top:1em;">
+    {{ response }}
+  </div>
+{% endif %}
 {% endblock %}

@@ -65,16 +65,33 @@ def status_page():
 
 @app.route("/testing")
 def testing_page():
-    return render_template("testing.html", active_page="testing")
+    response = None
+    prompt = None
+
+    if request.method == "POST":
+        prompt = request.form.get("prompt", "").strip()
+        if prompt:
+            config = load_config()
+            api_key = config.get("openai_api_key", "")
+            assistant_id = config.get("assistant_id", "")
+            assistant = SynthiaAssistant(api_key, assistant_id)
+            response = assistant.run(prompt)
+
+    return render_template(
+        "testing.html",
+        prompt=prompt,
+        response=response,
+        active_page="testing"
+    )
 
 def main():
     ensure_log_file()
     config = load_config()
 
-    run_openai_test(
-        config.get("openai_api_key", ""),
-        config.get("assistant_id", "")
-    )
+    # run_openai_test(
+    #     config.get("openai_api_key", ""),
+    #     config.get("assistant_id", "")
+    # )
 
     thread = threading.Thread(target=background_loop, daemon=True)
     thread.start()
