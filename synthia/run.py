@@ -14,7 +14,7 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "active_page": "main"})
+    return templates.TemplateResponse("main.html", {"request": request, "active_page": "main"})
 
 @app.get("/status", response_class=HTMLResponse)
 async def status_page(request: Request):
