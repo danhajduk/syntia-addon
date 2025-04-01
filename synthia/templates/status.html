@@ -10,6 +10,6 @@
 </div>
 <h2>OpenAI Usage</h2>
 <ul>
-  <li><strong>Usage ({{ usage.start_date }} to {{ usage.end_date }}):</strong> ${{ usage.total_usage }}</li>
+  <li><strong>Usage ({{ usage.start_date }} to {{ usage.end_date }}):</strong> {{ usage.total_tokens }} tokens</li>
 </ul>
 {% endblock %}

@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timedelta
 from utils import log
 
-USAGE_ENDPOINT = "https://api.openai.com/dashboard/billing/usage"
+USAGE_ENDPOINT = "https://api.openai.com/v1/usage"
 
 def get_usage(api_key, days=30):
     try:
@@ -21,9 +21,11 @@ def get_usage(api_key, days=30):
         response.raise_for_status()
         data = response.json()
 
-        total_usage = data.get("total_usage", 0) / 100.0  # in USD
+        # Sum up token usage from daily entries
+        total_tokens = sum(item.get("n_tokens_total", 0) for item in data.get("data", []))
+
         return {
-            "total_usage": round(total_usage, 4),
+            "total_tokens": total_tokens,
             "start_date": start_date.isoformat(),
             "end_date": end_date.isoformat()
         }
@@ -31,7 +33,7 @@ def get_usage(api_key, days=30):
     except Exception as e:
         log(f"❌ Failed to get usage: {e}", "error")
         return {
-            "total_usage": "Unavailable",
+            "total_tokens": "Unavailable",
             "start_date": None,
             "end_date": None
         }

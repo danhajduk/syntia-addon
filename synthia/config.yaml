@@ -27,9 +27,11 @@ options:
   enable_notifications: false
   openai_api_key: ""
   assistant_id: ""
+  admin_api_key: ""
 
 schema:
   log_level: str
   enable_notifications: bool
   openai_api_key: str
   assistant_id: str
+  admin_api_key: str

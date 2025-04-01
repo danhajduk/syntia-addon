@@ -6,13 +6,12 @@ from datetime import datetime
 from flask import Flask, render_template, request
 
 from utils import log
-from openai_utils import run_openai_test
 from assistant import SynthiaAssistant
 from usage import get_usage
 
-
 LOG_PATH = "data/log.txt"
 CONFIG_PATH = "/data/options.json"
+SETTINGS_PATH = "data/user_settings.json"
 
 app = Flask(__name__)
 state = {
@@ -59,15 +58,29 @@ def status_page():
         logs = "Log file not found."
 
     config = load_config()
-    api_key = config.get("openai_api_key", "")
-    usage = get_usage(api_key)
+    usage = {
+        "total_tokens": "Unavailable",
+        "start_date": None,
+        "end_date": None
+    }
 
-    # Optional: read cached last run time
-    last_run_file = "data/last_run.txt"
+    # Load saved settings (admin API key for usage)
+    try:
+        with open(SETTINGS_PATH, "r") as f:
+            saved = json.load(f)
+            admin_key = saved.get("admin_api_key")
+            if admin_key:
+                usage = get_usage(admin_key)
+    except Exception as e:
+        log(f"Failed to load settings or usage: {e}", "error")
+
+    # Read last assistant request time
     last_run = "Never"
-    if os.path.exists(last_run_file):
-        with open(last_run_file) as f:
+    try:
+        with open("data/last_run.txt") as f:
             last_run = f.read().strip()
+    except:
+        pass
 
     return render_template(
         "status.html",
@@ -106,38 +119,40 @@ def testing_page():
 
 @app.route("/settings", methods=["GET", "POST"])
 def settings_page():
-    settings_file = "data/user_settings.json"
-    settings = {"personality": "default", "reuse_thread": False}
-    usage = None
+    settings = {
+        "personality": "default",
+        "reuse_thread": False,
+        "admin_api_key": ""
+    }
 
-    # Load existing settings
-    if os.path.exists(settings_file):
-        with open(settings_file) as f:
+    if os.path.exists(SETTINGS_PATH):
+        with open(SETTINGS_PATH, "r") as f:
             settings.update(json.load(f))
 
     if request.method == "POST":
         settings["personality"] = request.form.get("personality", "default")
         settings["reuse_thread"] = "reuse_thread" in request.form
-        with open(settings_file, "w") as f:
+        settings["admin_api_key"] = request.form.get("admin_api_key", "")
+        with open(SETTINGS_PATH, "w") as f:
             json.dump(settings, f)
 
-    # Optional: fake usage stats for now
+    # (Optional) Fake usage for visual feedback
     usage = {
-        "prompt_tokens": 123,
-        "completion_tokens": 456,
-        "total_tokens": 579,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
     }
 
-    return render_template("settings.html", settings=settings, usage=usage, active_page="settings")
+    return render_template(
+        "settings.html",
+        settings=settings,
+        usage=usage,
+        active_page="settings"
+    )
 
 def main():
     ensure_log_file()
     config = load_config()
-
-    # run_openai_test(
-    #     config.get("openai_api_key", ""),
-    #     config.get("assistant_id", "")
-    # )
 
     thread = threading.Thread(target=background_loop, daemon=True)
     thread.start()

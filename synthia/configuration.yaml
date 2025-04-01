@@ -29,3 +29,10 @@ assistant_id:
   selector:
     text:
       type: text
+
+admin_api_key:
+  name: OpenAI Admin API Key
+  description: Used for usage reporting only (must be from a billing admin)
+  selector:
+    text:
+      type: password
