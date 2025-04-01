@@ -6,7 +6,7 @@ import uvicorn
 import os
 import json
 from assistant import SynthiaAssistant
-from usage import get_completions_usage, get_costs
+from usage import  get_costs
 from utils import log, LOG_PATH, SETTINGS_PATH, load_config, state
 
 app = FastAPI()
