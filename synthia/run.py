@@ -13,8 +13,9 @@ LOG_PATH = "data/log.txt"
 CONFIG_PATH = "/data/options.json"
 SETTINGS_PATH = "data/user_settings.json"
 
-app = Flask(__name__)
 from werkzeug.middleware.proxy_fix import ProxyFix
+
+app = Flask(__name__)
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
 
 state = {
@@ -46,6 +47,11 @@ def background_loop():
         state["last_run"] = datetime.now().isoformat()
         log("Synthia heartbeat — I am alive.", state["log_level"])
         time.sleep(60)
+
+@app.before_request
+def debug_ingress_paths():
+    print("⚙️ Request.path:", request.path)
+    print("⚙️ Request.script_root:", request.script_root)
 
 @app.route("/")
 def main_page():
