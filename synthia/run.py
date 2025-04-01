@@ -63,7 +63,7 @@ def status_page():
         active_page="status"
     )
 
-@app.route("/testing")
+@app.route("/testing", methods=["GET", "POST"])
 def testing_page():
     response = None
     prompt = None
