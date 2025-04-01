@@ -8,7 +8,7 @@ from utils import log
 app = FastAPI()
 
 # Serve static HTML/JS/CSS files
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.post("/api/chat")
 async def chat_api(prompt: str = Form(...)):
