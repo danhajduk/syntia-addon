@@ -40,6 +40,8 @@ class SynthiaAssistant:
 
             # Get the assistant's reply
             messages = self.client.beta.threads.messages.list(thread_id=thread.id)
+            with open("data/last_run.txt", "w") as f:
+                f.write(datetime.now().isoformat())            
             return messages.data[0].content[0].text.value.strip()
 
         except Exception as e:

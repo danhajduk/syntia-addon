@@ -8,4 +8,8 @@
 <div style="background:#222;padding:1em;border-radius:6px;max-height:300px;overflow:auto;">
   <pre>{{ logs }}</pre>
 </div>
+<h2>OpenAI Usage</h2>
+<ul>
+  <li><strong>Usage ({{ usage.start_date }} to {{ usage.end_date }}):</strong> ${{ usage.total_usage }}</li>
+</ul>
 {% endblock %}

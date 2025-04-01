@@ -8,6 +8,7 @@ from flask import Flask, render_template, request
 from utils import log
 from openai_utils import run_openai_test
 from assistant import SynthiaAssistant
+from usage import get_usage
 
 
 LOG_PATH = "data/log.txt"
@@ -56,12 +57,25 @@ def status_page():
             logs = "\n".join(f.readlines()[-20:])
     except:
         logs = "Log file not found."
+
+    config = load_config()
+    api_key = config.get("openai_api_key", "")
+    usage = get_usage(api_key)
+
+    # Optional: read cached last run time
+    last_run_file = "data/last_run.txt"
+    last_run = "Never"
+    if os.path.exists(last_run_file):
+        with open(last_run_file) as f:
+            last_run = f.read().strip()
+
     return render_template(
         "status.html",
         log_level=state["log_level"],
         enable_notifications=state["enable_notifications"],
-        last_run=state["last_run"],
+        last_run=last_run,
         logs=logs,
+        usage=usage,
         active_page="status"
     )
 
