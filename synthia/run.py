@@ -9,7 +9,17 @@ from assistant import SynthiaAssistant
 from usage import  get_costs
 from utils import log, LOG_PATH, load_config, state
 
+# Actual app with your routes
+internal_app = FastAPI()
+
+# All your @internal_app.get(...) routes go below this point
+@internal_app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("main.html", {"request": request, "active_page": "main"})
+
+# Wrap it for Ingress
 app = FastAPI()
+app.mount("/", internal_app)
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse, name="main_page")
