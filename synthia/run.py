@@ -54,8 +54,9 @@ def status_page():
     try:
         with open(LOG_PATH) as f:
             logs = "\n".join(f.readlines()[-20:])
-    except:
+    except Exception as e:
         logs = "Log file not found."
+        log(f"[STATUS] Could not read log file: {e}", "warning")
 
     config = load_config()
     usage = {
@@ -65,26 +66,32 @@ def status_page():
     }
 
     # Load saved settings to get admin API key
+    saved = {}
     try:
         if os.path.exists(SETTINGS_PATH):
             with open(SETTINGS_PATH, "r") as f:
                 saved = json.load(f)
         else:
-            saved = {}
-
-        admin_key = saved.get("admin_api_key")
-        if admin_key:
-            usage = get_usage(admin_key)
+            log(f"[STATUS] No settings file found at {SETTINGS_PATH}", "debug")
     except Exception as e:
-        log(f"Failed to load settings or usage: {e}", "error")
+        log(f"[STATUS] Failed to load settings: {e}", "error")
+
+    admin_key = saved.get("admin_api_key")
+    if admin_key:
+        try:
+            usage = get_usage(admin_key)
+        except Exception as e:
+            log(f"[STATUS] Error getting usage from OpenAI: {e}", "error")
+    else:
+        log(f"[STATUS] No admin API key set. Skipping usage fetch.", "info")
 
     # Read last assistant request time
     last_run = "Never"
     try:
         with open("data/last_run.txt") as f:
             last_run = f.read().strip()
-    except:
-        pass
+    except Exception as e:
+        log(f"[STATUS] Could not read last_run.txt: {e}", "warning")
 
     return render_template(
         "status.html",
