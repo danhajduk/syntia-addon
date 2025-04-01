@@ -140,12 +140,12 @@ def settings_page():
         with open(SETTINGS_PATH, "w") as f:
             json.dump(settings, f)
 
-    # (Optional) Fake usage for visual feedback
-    usage = {
-        "prompt_tokens": 0,
-        "completion_tokens": 0,
-        "total_tokens": 0
-    }
+    try:
+        admin_key = settings.get("admin_api_key")
+        if admin_key:
+            usage = get_usage(admin_key)
+    except Exception as e:
+        log(f"Failed to fetch usage: {e}", "error")
 
     return render_template(
         "settings.html",
