@@ -3,19 +3,22 @@
 <h1>Assistant Testing</h1>
 
 <form method="POST" action="/testing">
-  <label for="prompt">Ask Synthia something:</label><br>
-  <input type="text" id="prompt" name="prompt" style="width: 80%; padding: 0.5em; margin-top: 0.5em;" required>
-  <button type="submit" style="padding: 0.5em 1em; margin-left: 0.5em;">Ask</button>
+  <input type="text" name="prompt" id="prompt" style="width: 80%; padding: 0.5em;" placeholder="Ask me anything..." required autofocus>
+  <button type="submit" style="padding: 0.5em 1em;">Ask</button>
 </form>
 
+{% if thinking %}
+  <p><em>Thinking...</em></p>
+{% endif %}
+
 {% if prompt %}
-  <h2 style="margin-top:2em;">Your Prompt:</h2>
-  <p>{{ prompt }}</p>
+  <h2>Your Prompt:</h2>
+  <pre>{{ prompt }}</pre>
 {% endif %}
 
 {% if response %}
   <h2>Synthia Responded:</h2>
-  <div style="background:#222;padding:1em;border-radius:6px;margin-top:1em;">
+  <div style="background:#222;padding:1em;border-radius:6px;white-space:pre-wrap;">
     {{ response }}
   </div>
 {% endif %}

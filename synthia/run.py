@@ -69,8 +69,10 @@ def status_page():
 def testing_page():
     response = None
     prompt = None
+    thinking = False
 
     if request.method == "POST":
+        thinking = True
         prompt = request.form.get("prompt", "").strip()
         if prompt:
             config = load_config()
@@ -78,13 +80,41 @@ def testing_page():
             assistant_id = config.get("assistant_id", "")
             assistant = SynthiaAssistant(api_key, assistant_id)
             response = assistant.run(prompt)
+            thinking = False
 
     return render_template(
         "testing.html",
         prompt=prompt,
         response=response,
+        thinking=thinking,
         active_page="testing"
     )
+
+@app.route("/settings", methods=["GET", "POST"])
+def settings_page():
+    settings_file = "data/user_settings.json"
+    settings = {"personality": "default", "reuse_thread": False}
+    usage = None
+
+    # Load existing settings
+    if os.path.exists(settings_file):
+        with open(settings_file) as f:
+            settings.update(json.load(f))
+
+    if request.method == "POST":
+        settings["personality"] = request.form.get("personality", "default")
+        settings["reuse_thread"] = "reuse_thread" in request.form
+        with open(settings_file, "w") as f:
+            json.dump(settings, f)
+
+    # Optional: fake usage stats for now
+    usage = {
+        "prompt_tokens": 123,
+        "completion_tokens": 456,
+        "total_tokens": 579,
+    }
+
+    return render_template("settings.html", settings=settings, usage=usage, active_page="settings")
 
 def main():
     ensure_log_file()

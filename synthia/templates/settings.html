@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Settings</h1>
+
+<form method="POST" action="/settings">
+  <label for="personality">Personality/Tone:</label><br>
+  <select name="personality" id="personality">
+    <option value="default" {% if settings.personality == 'default' %}selected{% endif %}>Default</option>
+    <option value="friendly" {% if settings.personality == 'friendly' %}selected{% endif %}>Friendly</option>
+    <option value="professional" {% if settings.personality == 'professional' %}selected{% endif %}>Professional</option>
+    <option value="sarcastic" {% if settings.personality == 'sarcastic' %}selected{% endif %}>Sarcastic</option>
+  </select><br><br>
+
+  <label>
+    <input type="checkbox" name="reuse_thread" {% if settings.reuse_thread %}checked{% endif %}>
+    Reuse conversation thread
+  </label><br><br>
+
+  <button type="submit">Save Settings</button>
+</form>
+
+{% if usage %}
+<hr>
+<h2>OpenAI Usage</h2>
+<ul>
+  <li><strong>Prompt Tokens:</strong> {{ usage.prompt_tokens }}</li>
+  <li><strong>Completion Tokens:</strong> {{ usage.completion_tokens }}</li>
+  <li><strong>Total Tokens:</strong> {{ usage.total_tokens }}</li>
+</ul>
+{% endif %}
+{% endblock %}
