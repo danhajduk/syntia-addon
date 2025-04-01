@@ -21,7 +21,10 @@ def get_usage(api_key, days=30):
         response.raise_for_status()
         data = response.json()
 
-        # Sum up token usage from daily entries
+        # DEBUG: Log raw result
+        log(f"📊 Raw usage response: {data}", "debug")
+
+        # Sum token usage across all items
         total_tokens = sum(item.get("n_tokens_total", 0) for item in data.get("data", []))
 
         return {
@@ -33,7 +36,4 @@ def get_usage(api_key, days=30):
     except Exception as e:
         log(f"❌ Failed to get usage: {e}", "error")
         return {
-            "total_tokens": "Unavailable",
-            "start_date": None,
-            "end_date": None
-        }
+            "total
