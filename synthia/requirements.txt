@@ -1,3 +1,7 @@
 fastapi
 uvicorn
 jinja2
+openai
+requests
+aiofiles  # Required by FastAPI static file serving
+python-multipart  # Required for Form(...) support
