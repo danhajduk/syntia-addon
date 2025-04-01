@@ -1,64 +1,24 @@
-import json
-import time
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+import uvicorn
 import os
-import threading
-from datetime import datetime
-from flask import Flask, render_template, request
-
-from utils import log
+import json
 from assistant import SynthiaAssistant
-from usage import get_costs
+from usage import get_completions_usage, get_costs
+from utils import log, LOG_PATH, SETTINGS_PATH, load_config, state
 
-LOG_PATH = "data/log.txt"
-CONFIG_PATH = "/data/options.json"
-SETTINGS_PATH = "data/user_settings.json"
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
-from werkzeug.middleware.proxy_fix import ProxyFix
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "active_page": "main"})
 
-app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
-
-state = {
-    "log_level": "info",
-    "enable_notifications": False,
-    "last_run": "Never"
-}
-
-def load_config():
-    try:
-        with open(CONFIG_PATH, "r") as f:
-            config = json.load(f)
-            state["log_level"] = config.get("log_level", "info")
-            state["enable_notifications"] = config.get("enable_notifications", False)
-            return config
-    except Exception as e:
-        log(f"Error loading config: {e}", "error")
-        return {}
-
-def ensure_log_file():
-    os.makedirs("data", exist_ok=True)
-    if not os.path.exists(LOG_PATH):
-        with open(LOG_PATH, "w") as f:
-            f.write("Synthia log initialized.\n")
-
-def background_loop():
-    log("Background logic starting up...")
-    while True:
-        state["last_run"] = datetime.now().isoformat()
-        log("Synthia heartbeat — I am alive.", state["log_level"])
-        time.sleep(60)
-
-@app.before_request
-def debug_ingress_paths():
-    print("⚙️ Request.path:", request.path)
-    print("⚙️ Request.script_root:", request.script_root)
-
-@app.route("/")
-def main_page():
-    return render_template("main.html", active_page="main")
-
-@app.route("/status")
-def status_page():
+@app.get("/status", response_class=HTMLResponse)
+async def status_page(request: Request):
     logs = ""
     try:
         with open(LOG_PATH) as f:
@@ -87,7 +47,12 @@ def status_page():
 
     if admin_key:
         try:
-            costs = get_costs(admin_key,30)
+            usage = get_completions_usage(admin_key)
+        except Exception as e:
+            log(f"[STATUS] Error getting usage: {e}", "error")
+
+        try:
+            costs = get_costs(admin_key)
         except Exception as e:
             log(f"[STATUS] Error getting costs: {e}", "error")
     else:
@@ -100,83 +65,45 @@ def status_page():
     except Exception as e:
         log(f"[STATUS] Could not read last_run.txt: {e}", "warning")
 
-    return render_template(
-        "status.html",
-        log_level=state["log_level"],
-        enable_notifications=state["enable_notifications"],
-        last_run=last_run,
-        logs=logs,
-        usage=usage,
-        costs=costs,
-        active_page="status"
-    )
+    return templates.TemplateResponse("status.html", {
+        "request": request,
+        "log_level": state["log_level"],
+        "enable_notifications": state["enable_notifications"],
+        "last_run": last_run,
+        "logs": logs,
+        "usage": usage,
+        "costs": costs,
+        "active_page": "status"
+    })
 
-@app.route("/testing", methods=["GET", "POST"])
-def testing_page():
-    response = None
-    prompt = None
-    thinking = False
+@app.get("/testing", response_class=HTMLResponse)
+async def testing_page(request: Request):
+    return templates.TemplateResponse("testing.html", {"request": request, "response": None, "prompt": "", "active_page": "testing"})
 
-    if request.method == "POST":
-        thinking = True
-        prompt = request.form.get("prompt", "").strip()
-        if prompt:
-            config = load_config()
-            api_key = config.get("openai_api_key", "")
-            assistant_id = config.get("assistant_id", "")
-            assistant = SynthiaAssistant(api_key, assistant_id)
-            response = assistant.run(prompt)
-            thinking = False
+@app.post("/testing", response_class=HTMLResponse)
+async def testing_post(request: Request, prompt: str = Form(...)):
+    config = load_config()
+    api_key = config.get("openai_api_key")
+    assistant_id = config.get("openai_assistant_id")
+    response_text = ""
 
-    return render_template(
-        "testing.html",
-        prompt=prompt,
-        response=response,
-        thinking=thinking,
-        active_page="testing"
-    )
-
-@app.route("/settings", methods=["GET", "POST"])
-def settings_page():
-    settings = {
-        "personality": "default",
-        "reuse_thread": False,
-        "admin_api_key": ""
-    }
-
-    if os.path.exists(SETTINGS_PATH):
-        with open(SETTINGS_PATH, "r") as f:
-            settings.update(json.load(f))
-
-    if request.method == "POST":
-        settings["personality"] = request.form.get("personality", "default")
-        settings["reuse_thread"] = "reuse_thread" in request.form
-        settings["admin_api_key"] = request.form.get("admin_api_key", "")
-        with open(SETTINGS_PATH, "w") as f:
-            json.dump(settings, f)
+    if api_key and assistant_id:
+        assistant = SynthiaAssistant(api_key, assistant_id)
+        response_text = assistant.run(prompt)
 
     try:
-        admin_key = settings.get("admin_api_key")
-        if admin_key:
-            usage = get_usage(admin_key)
-    except Exception as e:
-        log(f"Failed to fetch usage: {e}", "error")
+        with open("data/last_run.txt", "w") as f:
+            from datetime import datetime
+            f.write(datetime.now().isoformat())
+    except:
+        pass
 
-    return render_template(
-        "settings.html",
-        settings=settings,
-        usage=usage,
-        active_page="settings"
-    )
-
-def main():
-    ensure_log_file()
-    config = load_config()
-
-    thread = threading.Thread(target=background_loop, daemon=True)
-    thread.start()
-
-    app.run(host="0.0.0.0", port=8099)
+    return templates.TemplateResponse("testing.html", {
+        "request": request,
+        "response": response_text,
+        "prompt": prompt,
+        "active_page": "testing"
+    })
 
 if __name__ == "__main__":
-    main()
+    uvicorn.run("run:app", host="0.0.0.0", port=8099, reload=False)
