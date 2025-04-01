@@ -51,10 +51,10 @@
 <body>
   <nav>
     <h2>Synthia</h2>
-    <a href="/" class="{{ 'active' if active_page == 'main' else '' }}">Main</a>
-    <a href="/status" class="{{ 'active' if active_page == 'status' else '' }}">Status</a>
-    <a href="/testing" class="{{ 'active' if active_page == 'testing' else '' }}">Testing</a>
-    <a href="/settings" class="{{ 'active' if active_page == 'settings' else '' }}">Settings</a>
+    <a href="{{ url_for('main_page') }}" class="{{ 'active' if active_page == 'main' else '' }}">Main</a>
+    <a href="{{ url_for('status_page') }}" class="{{ 'active' if active_page == 'status' else '' }}">Status</a>
+    <a href="{{ url_for('testing_page') }}" class="{{ 'active' if active_page == 'testing' else '' }}">Testing</a>
+    <a href="{{ url_for('settings_page') }}" class="{{ 'active' if active_page == 'settings' else '' }}">Settings</a>
   </nav>
   <main>
     {% block content %}{% endblock %}
