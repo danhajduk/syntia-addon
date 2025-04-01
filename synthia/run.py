@@ -78,12 +78,7 @@ def status_page():
 
     if admin_key:
         try:
-            usage = get_completions_usage(admin_key)
-        except Exception as e:
-            log(f"[STATUS] Error getting usage: {e}", "error")
-
-        try:
-            costs = get_costs(admin_key)
+            costs = get_costs(admin_key,365)
         except Exception as e:
             log(f"[STATUS] Error getting costs: {e}", "error")
     else:
