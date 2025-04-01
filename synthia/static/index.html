@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Synthia AI Assistant</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <h1>🧠 Synthia</h1>
+    <nav>
+      <a href="#" onclick="showPage('main')">Main</a>
+      <a href="#" onclick="showPage('status')">Status</a>
+      <a href="#" onclick="showPage('testing')">Testing</a>
+      <a href="#" onclick="showPage('settings')">Settings</a>
+    </nav>
+  </div>
+  <div class="content">
+    <div id="main" class="page">👋 Welcome to Synthia!</div>
+    <div id="status" class="page">📊 Status Info</div>
+    <div id="testing" class="page">🧪 Testing Tools</div>
+    <div id="settings" class="page">⚙️ Settings</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
