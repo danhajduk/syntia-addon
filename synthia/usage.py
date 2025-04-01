@@ -9,7 +9,7 @@ def get_costs(api_key, days=2):
 
     try:
         end_date = datetime.utcnow()
-        start_date = end_date - timedelta(days=days)
+        start_date = (end_date - timedelta(days=days)).replace(hour=0, minute=0, second=0, microsecond=0)
 
         headers = {
             "Authorization": f"Bearer {api_key}",
@@ -18,7 +18,6 @@ def get_costs(api_key, days=2):
 
         params = {
             "start_time": int(start_date.timestamp()),
-            "end_time": int(end_date.timestamp()),
             "group_by": ["project_id"]
         }
 
