@@ -2,7 +2,7 @@ import requests
 from datetime import datetime, timedelta
 from utils import log
 
-USAGE_ENDPOINT = "https://api.openai.com/v1/dashboard/usage"
+USAGE_ENDPOINT = "https://api.openai.com/dashboard/billing/usage"
 
 def get_usage(api_key, days=30):
     try:
