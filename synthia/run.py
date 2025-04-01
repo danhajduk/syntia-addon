@@ -20,3 +20,6 @@ def background_loop():
 
 # Start background logic
 threading.Thread(target=background_loop, daemon=True).start()
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("run:app", host="0.0.0.0", port=8099, reload=True)
