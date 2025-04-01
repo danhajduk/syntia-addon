@@ -59,25 +59,36 @@ def status_page():
         log(f"[STATUS] Could not read log file: {e}", "warning")
 
     config = load_config()
+    admin_key = config.get("admin_api_key")
+
     usage = {
         "total_tokens": "Unavailable",
-        "start_date": None,
-        "end_date": None
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "start_time": None,
+        "end_time": None
     }
 
-    # Load saved settings to get admin API key
-    config = load_config()
-    admin_key = config.get("admin_api_key")
+    costs = {
+        "total_cost": "Unavailable",
+        "currency": "USD",
+        "start_time": None,
+        "end_time": None
+    }
 
     if admin_key:
         try:
-            usage = get_usage(admin_key)
+            usage = get_completions_usage(admin_key)
         except Exception as e:
-            log(f"[STATUS] Error getting usage from OpenAI: {e}", "error")
-    else:
-        log(f"[STATUS] No admin API key set. Skipping usage fetch.", "info")
+            log(f"[STATUS] Error getting usage: {e}", "error")
 
-    # Read last assistant request time
+        try:
+            costs = get_costs(admin_key)
+        except Exception as e:
+            log(f"[STATUS] Error getting costs: {e}", "error")
+    else:
+        log(f"[STATUS] No admin API key set in config. Skipping usage and cost fetch.", "info")
+
     last_run = "Never"
     try:
         with open("data/last_run.txt") as f:
@@ -92,6 +103,7 @@ def status_page():
         last_run=last_run,
         logs=logs,
         usage=usage,
+        costs=costs,
         active_page="status"
     )
 

@@ -9,11 +9,21 @@
   <pre>{{ logs }}</pre>
 </div>
 <h2>OpenAI Usage</h2>
-{% if usage.total_tokens != "Unavailable" and usage.total_tokens != 0 %}
+{% if usage.total_tokens != "Unavailable" %}
 <ul>
-  <li><strong>Usage ({{ usage.start_date }} to {{ usage.end_date }}):</strong> {{ usage.total_tokens }} tokens</li>
+  <li><strong>Total Tokens:</strong> {{ usage.total_tokens }}</li>
+  <li><strong>Input:</strong> {{ usage.input_tokens }} | Output: {{ usage.output_tokens }}</li>
+  <li><strong>Period:</strong> {{ usage.start_time }} → {{ usage.end_time }}</li>
+</ul>
+{% endif %}
+
+<h2>OpenAI Costs</h2>
+{% if costs.total_cost != "Unavailable" %}
+<ul>
+  <li><strong>Total Cost:</strong> ${{ costs.total_cost }} {{ costs.currency }}</li>
+  <li><strong>Period:</strong> {{ costs.start_time }} → {{ costs.end_time }}</li>
 </ul>
 {% else %}
-<p><em>No token usage found for this period or API key.</em></p>
+<p><em>Unable to fetch cost data.</em></p>
 {% endif %}
 {% endblock %}
