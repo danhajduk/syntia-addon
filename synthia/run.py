@@ -7,7 +7,7 @@ import os
 import json
 from assistant import SynthiaAssistant
 from usage import  get_costs
-from utils import log
+from utils import log, LOG_PATH, load_config, state
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
